@@ -28,7 +28,7 @@ const FormNuevaTarea = () => {
             guardarTarea(tareaseleccionada);
         } else {
             guardarTarea({
-                name:''
+                nombre:''
             })
         }
     }, [tareaseleccionada]);
@@ -36,11 +36,11 @@ const FormNuevaTarea = () => {
 
      /* state del formulario */
      const [tarea, guardarTarea] = useState ({
-        name: ''
+        nombre: ''
      })
 
      /* extraer nombre del proyecto */
-     const {name} = tarea;
+     const {nombre} = tarea;
 
      /* si no hay proyecto seleccionado */
     if(!proyecto) return null;
@@ -60,7 +60,7 @@ const FormNuevaTarea = () => {
         e.preventDefault();
 
         /* validar */
-        if(name.trim() === '') {
+        if(nombre.trim() === '') {
             validarTarea();
             return;
         }
@@ -68,10 +68,8 @@ const FormNuevaTarea = () => {
         /* revisar si estamos editando o agregando una tarea */
         if(tareaseleccionada === null) {
             /* agregar la nueva tarea al state de tareas */
-            tarea.proyectoId = proyectoActual.id;
-            tarea.status = false;
+            tarea.proyecto = proyectoActual._id;
             agregarTarea(tarea);
-
         } else {
             /* actualizar tarea existente */
             actualizaTarea(tarea);
@@ -87,7 +85,7 @@ const FormNuevaTarea = () => {
 
         /* reiniciar form */
         guardarTarea({
-            name: ''
+            nombre: ''
         })
 
     }
@@ -102,8 +100,8 @@ const FormNuevaTarea = () => {
                         type="text"
                         className="input-text"
                         placeholder="Nombre Tarea..."
-                        name="name"
-                        value={name}
+                        name="nombre"
+                        value={nombre}
                         onChange={handleChange}
                     />
                 </div>

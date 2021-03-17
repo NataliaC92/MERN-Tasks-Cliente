@@ -7,7 +7,7 @@ import proyectoContext from '../../context/proyectos/proyectoContext';
 const Tarea = ({tareaProyecto}) => {
 
     const tareasContext = useContext(TareaContext);
-    const { eliminarTarea, obtenerTareas, cambiarEstadoTarea, guardarTareaActual } = tareasContext;
+    const { eliminarTarea, obtenerTareas, actualizaTarea, guardarTareaActual } = tareasContext;
 
     /* extraer si un proyecto esta activo */
     const proyectosContext = useContext(proyectoContext);
@@ -18,18 +18,18 @@ const Tarea = ({tareaProyecto}) => {
 
     /* funcion que se ejecuta cuando se preciona btn eliminar tarea  */
     const tareaEliminar = id => {
-        eliminarTarea(id);
-        obtenerTareas(proyectoActual.id)
+        eliminarTarea(id, proyectoActual._id);
+        obtenerTareas(proyectoActual.id);
     }
 
     /* funcion que mod el estado de las tareas */
     const cambiarEstado = tarea => {
-        if(tarea.status) {
-            tarea.status = false
+        if(tarea.estado) {
+            tarea.estado = false
         } else {
-            tarea.status = true
+            tarea.estado = true
         }
-        cambiarEstadoTarea(tarea);
+        actualizaTarea(tarea);
     }
 
     /* agrega tarea actual cuando usuario desea editar */
@@ -40,10 +40,10 @@ const Tarea = ({tareaProyecto}) => {
 
     return ( 
         <li className="tarea sombra">
-            <p>{tareaProyecto.name}</p>
+            <p>{tareaProyecto.nombre}</p>
 
             <div className="estado">
-                {tareaProyecto.status
+                {tareaProyecto.estado
                     ?
                       (
                           <button
@@ -74,7 +74,7 @@ const Tarea = ({tareaProyecto}) => {
                 <button
                     type="button"
                     className="btn btn-secundario"
-                    onClick={() => tareaEliminar(tareaProyecto.id)}
+                    onClick={() => tareaEliminar(tareaProyecto._id)}
                 >Eliminar</button>
             </div>
         </li>

@@ -1,8 +1,30 @@
-import React, { useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
+import AlertaContext from '../../context/alerta/alertaContext';
+import AuthContext from '..//../context/autenticacion/authContext';
 
-const NuevaCuenta = () => {
+
+const NuevaCuenta = (props) => {
+
+    /* extraer los valores del context */
+    const alertaContext = useContext(AlertaContext);
+    const {alerta, mostrarAlerta } = alertaContext;
+
+    const authContext = useContext(AuthContext);
+    const { mensaje, autenticado, registrarUsuario } = authContext;
+
+    //en caso en que el usuario se autentique o resgistre o en caso que sea duplicado
+    useEffect(() => {
+        if(autenticado) {
+            props.history.push('/proyectos');
+        }
+
+        if(mensaje) {
+            mostrarAlerta(mensaje.msg, mensaje.categoria);
+        }
+        //eslint-disable-netx-line
+    }, [mensaje, autenticado, props.history]);
 
     /* state para iniciar sesion */
 
@@ -16,8 +38,6 @@ const NuevaCuenta = () => {
     /* extraer de user */
     const { nombre, email, password, confirmarpassword } = user;
     
-
-
     const onChangeIniciarSesion = (e) => {
         setuser({
             ...user,
@@ -30,17 +50,38 @@ const NuevaCuenta = () => {
         e.preventDefault();
 
         /* validar que no tenga campos vacios */
+        if(nombre.trim() === '' || 
+        email.trim() === '' || 
+        password.trim() === '' || 
+        confirmarpassword.trim() === '') {
+            mostrarAlerta('Todo los campos son obligatorios', 'alerta-error');
+            return;
+        }
 
         /* password minimo de 6 caracteres */
+        if(password.length < 6) {
+            mostrarAlerta('El password debe ser de al menos 6 caracteres', 'alerta-error');
+            return;
+        }
 
         /* los 2 password son iguales */
+        if(password !== confirmarpassword) {
+            mostrarAlerta('Los password no son iguales', 'alerta-error');
+            return;
+        }
 
         /* pasar los datos al action */
+        registrarUsuario({
+            nombre,
+            email,
+            password
+        });
 
     }
 
     return ( 
         <div className="form-usuario">
+            { alerta ? ( <div className={`alerta ${alerta.categoria}`}>{alerta.msg}</div>) : null}
             <div className="contenedor-form sombra-dark">
                 <h1>Crear una cuenta</h1>
 
